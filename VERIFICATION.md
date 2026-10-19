@@ -22,16 +22,18 @@ Windows 11 x64 / Node.js 22.23.3 / pnpm 10.21.0 / Electron 44.9.0。
 - `artifacts/packaged-maturity.json`、`packaged-smoke.json`、`packaged-stability.json`、`updater-fixture.json`、`github-check.json`。
 - 截图：`command-palette.png`、`maturity-settings.png`、`update-panel.png`、`update-progress.png`、`update-retry.png`、`window-light.png`。
 
-### 首次 GitHub 发布进度 · 2026-10-19
+### 首次 GitHub 发布与更新源验收 · 2026-10-19
 
-- 已初始化 Git 并推送至 `haipengTian/normal-desk` 的 `main`；发布提交 `2b1ee184bd1f4b1225bd5f514edf19f361fbee2c` 与标签 `v0.3.0` 已推送。
-- 发布前本地 45 项测试与类型检查通过，发布脚本独立只读审查通过。
-- [首次 Windows release 工作流](https://github.com/haipengTian/normal-desk/actions/runs/39193008807) 已结束，结论为 failure。云端安装依赖、测试、类型检查、构建与 Create draft release 均成功；最后 Publish complete release 失败，尚未公开正式版本。匿名 Release latest 查询仍为 404。
-- 维护者提供失败日志：草稿缺少 `Desktop-Starter-Setup.exe.blockmap`，被完整性检查拒绝发布。已将打包与上传分开：先 `--publish never` 生成整套产物，再由 GitHub CLI 一次显式上传三份文件，核对后才公开；保留资产完整性检查。
-- 新增手动恢复入口，使用已有标签源码与当前发布工具，不移动标签，不替换已公开资产。回归测试先失败后通过，覆盖缺 blockmap 草稿的完整重传、本地缺文件、远端仍缺文件及查询/上传/发布失败。本次 48 项测试、类型检查和独立只读审查通过。尚待维护者触发修复后的工作流与发布后的真实客户端检查。
-- 当前仓库尚无正式版本，无法执行 GitHub 跨版本真实下载/安装/重启验收。维护者发布首版和更高版本后，按 README 完成完整升级，确认路径/快捷方式/设置保留。
-- 安装包 Authenticode 状态为 `NotSigned`；SHA-512 检查只验证下载与元数据一致，当前未签名构建没有发布者身份保证。本次授权发布未签名测试构建；正式分发需配置签名。
-- 未执行本机安装/卸载或真实登录系统启动；保存/打开/确认框选择、系统启动开关均在边界注入。目录后缀修复仍待真实安装器 UI 验收。macOS/Linux 未验收。
+- [v0.3.0 正式 Release](https://github.com/haipengTian/normal-desk/releases/tag/v0.3.0) 已公开，draft=false、prerelease=false。标签仍指向发布源码提交 `2b1ee184bd1f4b1225bd5f514edf19f361fbee2c`；发布工具修复提交为 `4dd447108682e44b5d2baeb30780120ff3d08c73`。
+- [恢复发布工作流](https://github.com/haipengTian/normal-desk/actions/runs/39194248831) 已 completed/success；使用指定标签源码重新执行测试、类型检查、构建、打包、上传与公开。公开资产均非空：`Desktop-Starter-Setup.exe`（117090584 字节）、`Desktop-Starter-Setup.exe.blockmap`（122341 字节）、`latest.yml`（347 字节）。
+- 匿名下载真实 GitHub `latest.yml` 成功，version=0.3.0、安装包名称与资产一致，元数据 size 与公开安装包大小相同。
+- 本地真实 0.3.0 打包客户端在临时用户目录中，通过关于页“检查更新”连接正式 GitHub 源，无替换更新库或 feed。日志为 `Update for version 0.3.0 is not available (latest version: 0.3.0, downgrade is disallowed).`；检查后状态 idle，无 `No published versions` 或 updater.failure。已查看实际页面截图。
+- 发布证据：`artifacts/github-release-run.json`、`github-release.json`、`github-latest.yml`；客户端证据：`artifacts/github-published.json`、`github-published.png`。本地原有安装包与云端重新构建的发布包分别保留；公开下载安装入口以 Release 为准。
+- 首次任务 [39193008807](https://github.com/haipengTian/normal-desk/actions/runs/39193008807) 曾因草稿缺少 blockmap 被完整性检查拒绝发布。修复将打包与上传分开：先 `--publish never` 生成整套产物，再由 GitHub CLI 显式上传三份文件，核对后公开。手动恢复使用已有标签源码与当前发布工具，不移动标签，不替换已公开资产。
+- 修复前观察到回归测试失败；修复后本地 48 项测试、类型检查与独立只读审查通过。覆盖缺 blockmap 草稿的完整重传、本地缺文件、远端仍缺文件及查询/上传/发布失败。
+- 真实跨版本下载/安装/重启仍待更高版本验收，需确认安装路径、快捷方式、设置保留。此次同版本检查未下载或运行安装器。
+- 安装包为未签名测试构建；SHA-512 验证文件与元数据一致，正式分发需配置发布者签名。
+- 未执行本机安装/卸载或真实登录系统启动；系统对话框及启动开关仍沿用上述边界测试证据。目录后缀修复仍待实际安装器 UI 验收。macOS/Linux 未验收。
 
 ## 第一批历史记录 · 0.2.0
 
