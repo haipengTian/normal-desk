@@ -1,0 +1,33 @@
+:root { --font-geist-sans: var(--font-inter); }
+html, body { height: 100%; overflow: hidden; }
+.startup-screen { -webkit-app-region: drag; }
+.startup-logo { animation: startup-breathe 1600ms ease-in-out infinite; }
+@keyframes startup-breathe {
+  0%, 100% { opacity: .65; transform: scale(.96); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.desktop-shell[data-initializing="true"] > header,
+.desktop-shell[data-initializing="true"] > .desktop-body { visibility: hidden; }
+.reduce-motion .startup-logo { animation: none; }
+@media (prefers-reduced-motion: reduce) { .startup-logo { animation: none; } }
+.desktop-titlebar { height: 48px; -webkit-app-region: drag; user-select: none; }
+.desktop-titlebar-actions { padding-right: calc(max(0px, 100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw)) + 12px); }
+[data-platform="darwin"] .desktop-brand { padding-left: 88px; }
+[data-platform="darwin"] .desktop-brand .sidebar-label { display: inline; }
+[data-platform="darwin"] .desktop-brand { min-width: 200px; }
+button, select, input { -webkit-app-region: no-drag; }
+button:not(:disabled), select { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+::selection { background: var(--primary); color: var(--primary-foreground); }
+* { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.desktop-sidebar { width: 224px; transition: width 180ms ease; }
+.desktop-sidebar[data-collapsed="true"] { width: 72px; }
+.desktop-sidebar[data-collapsed="true"] .sidebar-label { display: none; }
+.desktop-sidebar[data-collapsed="true"] .sidebar-item { justify-content: center; padding-inline: 0; }
+.page-enter { animation: page-enter 220ms ease-out; }
+@keyframes page-enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.window-sketch { transform: rotate(-5deg); }
+.window-sketch-inner { transform: rotate(10deg) translate(12%, 12%); }
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+@media (max-width: 1050px) { .welcome-art { display: none; } }

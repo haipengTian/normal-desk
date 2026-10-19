@@ -1,0 +1,37 @@
+appId: local.desktop-starter
+productName: Desktop Starter
+directories:
+  output: release/current
+  buildResources: build
+asar: true
+npmRebuild: false
+files:
+  - desktop-dist/**/*
+  - out/**/*
+  - licenses/**/*
+  - NOTICE.md
+  - package.json
+
+win:
+  icon: build/icon.ico
+  target:
+    - nsis
+
+nsis:
+  include: installer.nsh
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  shortcutName: Desktop Starter
+  artifactName: Desktop-Starter-Setup.${ext}
+portable:
+  artifactName: Desktop-Starter-Portable.${ext}
+
+electronDist: node_modules/electron/dist
+publish:
+  provider: github
+  owner: haipengTian
+  repo: normal-desk
+  releaseType: draft
+
