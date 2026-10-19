@@ -3,39 +3,56 @@ name: Windows release
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to publish or recover (for example v0.3.0)
+        required: true
+        type: string
+
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
   windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: source
     steps:
+      # Keep the current publication tools when recovering an older, unchanged tag.
       - uses: actions/checkout@v4
+        with:
+          path: release-tools
+          sparse-checkout: scripts
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+          path: source
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Enable pnpm
         run: corepack enable
       - name: Check version matches tag
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
         run: node -e "if(process.env.RELEASE_TAG !== 'v'+require('./package.json').version) throw Error('Tag must match package version')"
       - run: pnpm install --frozen-lockfile
       - run: pnpm run setup
       - run: pnpm test
       - run: pnpm typecheck
       - run: pnpm build
-      - name: Create draft release
-        run: pnpm exec electron-builder --win nsis --x64 --publish always
+      - name: Build complete release locally
+        run: pnpm exec electron-builder --win nsis --x64 --publish never
+      - name: Upload and publish complete release
+        run: pwsh -File ../release-tools/scripts/publish-release.ps1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish complete release
-        run: pwsh -File scripts/publish-release.ps1
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ github.ref_name }}

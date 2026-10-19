@@ -12,7 +12,7 @@ Windows 11 x64 / Node.js 22.23.3 / pnpm 10.21.0 / Electron 44.9.0。
 - 0.3.0 打包客户端现有 `test:e2e` 与 `test:stability` 通过：导航/主题/字体/标题栏颜色、桥接隔离、偏好与窗口状态持久化，以及诊断导出、实际 renderer/React 崩溃恢复、早期错误取消白屏监测、主进程致命退出。最终快捷面板滚动修复未改变这些原生稳定性路径。
 - 已查看实际打包客户端快捷面板、设置管理、更新初始/进度/重试页面，以及含原生控制按钮的完整浅色窗口截图。无版本或运行状态侧栏杂讯。
 - 独立只读审查完成：修复 electron-updater 的异步启动安装器失败时仍可能退出问题；保留上游下载/校验/签名，显式安装改为等待 Windows 接受进程后再退出，启动失败清除重入标志供重试。再次定点复核通过。
-- 实际打包客户端连接 `haipengTian/normal-desk`，日志确认 `No published versions on GitHub`，界面返回可重试检查失败；不是“已是最新版”。仓库元数据查询确认公开，默认分支 main。`resources/app-update.yml` 已指向该仓库，latest.yml 版本为 0.3.0。
+- 发布前实际打包客户端连接 `haipengTian/normal-desk`，日志确认 `No published versions on GitHub`，界面返回可重试检查失败；不是“已是最新版”。仓库元数据查询确认公开，默认分支 main。`resources/app-update.yml` 已指向该仓库，latest.yml 版本为 0.3.0。
 
 ### 当前入口与证据
 
@@ -22,11 +22,15 @@ Windows 11 x64 / Node.js 22.23.3 / pnpm 10.21.0 / Electron 44.9.0。
 - `artifacts/packaged-maturity.json`、`packaged-smoke.json`、`packaged-stability.json`、`updater-fixture.json`、`github-check.json`。
 - 截图：`command-palette.png`、`maturity-settings.png`、`update-panel.png`、`update-progress.png`、`update-retry.png`、`window-light.png`。
 
-### 发布与真实安装仍待验收
+### 首次 GitHub 发布进度 · 2026-10-19
 
-- 本次未初始化 Git、推送、创建标签或发布 Release。Windows 草稿发布 workflow 已准备，尚未在 GitHub Actions 运行。
-- 当前仓库无正式版本，无法执行 GitHub 跨版本真实下载/安装/重启验收。维护者发布首版和更高版本后，按 README 完成完整升级，确认路径/快捷方式/设置保留。
-- 安装包 Authenticode 状态为 `NotSigned`；SHA-512 检查只验证下载与元数据一致，当前未签名构建没有发布者身份保证。对外发布前需配置签名。
+- 已初始化 Git 并推送至 `haipengTian/normal-desk` 的 `main`；发布提交 `2b1ee184bd1f4b1225bd5f514edf19f361fbee2c` 与标签 `v0.3.0` 已推送。
+- 发布前本地 45 项测试与类型检查通过，发布脚本独立只读审查通过。
+- [首次 Windows release 工作流](https://github.com/haipengTian/normal-desk/actions/runs/39193008807) 已结束，结论为 failure。云端安装依赖、测试、类型检查、构建与 Create draft release 均成功；最后 Publish complete release 失败，尚未公开正式版本。匿名 Release latest 查询仍为 404。
+- 维护者提供失败日志：草稿缺少 `Desktop-Starter-Setup.exe.blockmap`，被完整性检查拒绝发布。已将打包与上传分开：先 `--publish never` 生成整套产物，再由 GitHub CLI 一次显式上传三份文件，核对后才公开；保留资产完整性检查。
+- 新增手动恢复入口，使用已有标签源码与当前发布工具，不移动标签，不替换已公开资产。回归测试先失败后通过，覆盖缺 blockmap 草稿的完整重传、本地缺文件、远端仍缺文件及查询/上传/发布失败。本次 48 项测试、类型检查和独立只读审查通过。尚待维护者触发修复后的工作流与发布后的真实客户端检查。
+- 当前仓库尚无正式版本，无法执行 GitHub 跨版本真实下载/安装/重启验收。维护者发布首版和更高版本后，按 README 完成完整升级，确认路径/快捷方式/设置保留。
+- 安装包 Authenticode 状态为 `NotSigned`；SHA-512 检查只验证下载与元数据一致，当前未签名构建没有发布者身份保证。本次授权发布未签名测试构建；正式分发需配置签名。
 - 未执行本机安装/卸载或真实登录系统启动；保存/打开/确认框选择、系统启动开关均在边界注入。目录后缀修复仍待真实安装器 UI 验收。macOS/Linux 未验收。
 
 ## 第一批历史记录 · 0.2.0
