@@ -34,3 +34,8 @@ jobs:
         run: pnpm exec electron-builder --win nsis --x64 --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish complete release
+        run: pwsh -File scripts/publish-release.ps1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.ref_name }}

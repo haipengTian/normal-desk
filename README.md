@@ -7,7 +7,8 @@
 Windows 10/11 x64；Node.js 22.12+（推荐 Node 22 LTS）、pnpm 10.21。
 
 ```powershell
-cd E:\workspace\personal\ai\ai-desktop
+git clone https://github.com/haipengTian/normal-desk.git
+cd normal-desk
 corepack pnpm install --frozen-lockfile
 corepack pnpm run setup
 corepack pnpm dev
@@ -47,16 +48,16 @@ corepack pnpm dist:win
 
 源码运行和便携版不启用自动更新。安装版首次使用此能力，需要手动安装本次 0.3.0；更早的客户端没有更新入口。更新沿用 appId、安装位置和用户设置目录。
 
-本地 `pnpm dist:win` 始终使用 `--publish never`，生成安装包、`.blockmap` 和 `latest.yml`，不访问远程仓库进行发布。项目已准备 `.github/workflows/release.yml`：在源码推送到该仓库后，推送与 package.json 版本一致的 `v*` 标签会在 Windows 构建，创建 **Draft Release** 并上传更新文件。检查产物后在 GitHub 手动发布，客户端只读取正式发布的稳定版。GitHub Actions 使用仓库内置 `GITHUB_TOKEN`，不向客户端嵌入令牌。
+本地 `pnpm dist:win` 始终使用 `--publish never`，生成安装包、`.blockmap` 和 `latest.yml`，不进行远程发布。**推送与 package.json 一致的 `v*` 标签即触发正式发布**：Windows workflow 先执行测试、类型检查与构建，再创建草稿、上传文件，确认三份更新文件齐全后公开 Release。失败会保留草稿，不把不完整更新提供给客户端。GitHub Actions 使用仓库内置 `GITHUB_TOKEN`，不向客户端嵌入令牌。
 
-首次发布步骤（推送和发布由仓库维护者执行）：
+发布步骤（由仓库维护者执行）：
 
-1. 将此项目源码纳入 `normal-desk`，启用 Actions；确认标签版本与 package.json 一致。
-2. 推送如 `v0.3.0` 的标签，等待 Windows release workflow 成功。
-3. 检查草稿包含 `Desktop-Starter-Setup.exe`、对应 `.blockmap`、`latest.yml`，再发布草稿；不要单独替换安装包而不更新元数据。
+1. 更新 package.json 版本，并添加对应的 `docs/releases/v版本号.md` 发布说明；推送源码。
+2. 确认发布意图后，推送如 `v0.3.0` 的标签，等待 Windows release workflow 成功。
+3. 查看公开 Release 的 `Desktop-Starter-Setup.exe`、对应 `.blockmap`、`latest.yml`；不要单独替换安装包而不更新元数据。
 4. 后续用更高版本测试完整跨版本升级：检查 → 下载 → 确认安装 → 新版重新启动，确认原安装路径、快捷方式、设置仍有效。
 
-2026-10-19 查询时仓库公开，但尚无正式 Release；此时检查会显示可重试的更新失败。下载由 electron-updater 验证 `latest.yml` 中的 SHA-512，若配置签名身份，还会使用库的签名校验。当前未签名产物不提供 Authenticode 发布者身份保证；对外发布前需接入签名证书，并完成真实安装升级验收。
+下载由 electron-updater 验证 `latest.yml` 中的 SHA-512，若配置签名身份，还会使用库的签名校验。当前未签名产物不提供 Authenticode 发布者身份保证；面向正式用户分发前需接入签名证书，并完成真实安装升级验收。
 
 ## 日志、诊断与故障恢复
 
